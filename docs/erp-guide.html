@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP &amp; Business Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #13223f;
+    --ink-soft: #526079;
+    --ink-faint: #8592a8;
+    --paper: #f4f5f8;
+    --surface: #ffffff;
+    --surface-2: #eceef3;
+    --accent: #a97a2c;
+    --accent-soft: #ceb072;
+    --line: #dde2ea;
+    --ok: #2f7d5c;
+    --ok-bg: #e6f2ec;
+    --view: #4f5f82;
+    --view-bg: #eaedf5;
+    --no: #ac4130;
+    --no-bg: #f7e9e6;
+    --shadow: 0 1px 2px rgba(19,34,63,0.04), 0 8px 24px -12px rgba(19,34,63,0.12);
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #eef1f7;
+      --ink-soft: #adb8cc;
+      --ink-faint: #7c879e;
+      --paper: #0f1526;
+      --surface: #161f36;
+      --surface-2: #1e2946;
+      --accent: #d6ab5e;
+      --accent-soft: #8a6a35;
+      --line: #2b3557;
+      --ok: #6cc79c;
+      --ok-bg: #16332a;
+      --view: #9fb0d6;
+      --view-bg: #1c2947;
+      --no: #e6907c;
+      --no-bg: #3a2320;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #eef1f7;
+    --ink-soft: #adb8cc;
+    --ink-faint: #7c879e;
+    --paper: #0f1526;
+    --surface: #161f36;
+    --surface-2: #1e2946;
+    --accent: #d6ab5e;
+    --accent-soft: #8a6a35;
+    --line: #2b3557;
+    --ok: #6cc79c;
+    --ok-bg: #16332a;
+    --view: #9fb0d6;
+    --view-bg: #1c2947;
+    --no: #e6907c;
+    --no-bg: #3a2320;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .page { max-width: 960px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* ---------- Masthead ---------- */
+  header.masthead {
+    max-width: 960px; margin: 0 auto; padding: 56px 24px 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .kicker::before {
+    content: "";
+    width: 22px; height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+  h1.title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(34px, 5vw, 48px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  p.dek {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin: 0 0 26px;
+    text-wrap: pretty;
+  }
+  .status-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 11px 6px;
+    border-radius: 100px;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip.live { background: var(--ok-bg); color: var(--ok); }
+  .chip.pending { background: var(--surface-2); color: var(--ink-faint); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* ---------- Sections ---------- */
+  section { max-width: 960px; margin: 0 auto; padding: 52px 24px; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(24px, 3vw, 30px);
+    line-height: 1.18;
+    margin: 0 0 16px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .prose { max-width: 700px; }
+  .prose p { color: var(--ink-soft); margin: 0 0 14px; font-size: 16px; }
+  .prose p:last-child { margin-bottom: 0; }
+  .lede { font-size: 18px; color: var(--ink); }
+
+  /* ---------- Role / permission table ---------- */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
+  table { width: 100%; border-collapse: collapse; min-width: 620px; }
+  thead th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14.5px;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-2); }
+  td.role-name { font-weight: 600; color: var(--ink); white-space: nowrap; }
+  td.role-desc { color: var(--ink-faint); font-size: 13px; }
+
+  .perm {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 12.5px; font-weight: 600;
+    padding: 4px 10px; border-radius: 6px; white-space: nowrap;
+  }
+  .perm.full { background: var(--ok-bg); color: var(--ok); }
+  .perm.view { background: var(--view-bg); color: var(--view); }
+  .perm.none { background: var(--no-bg); color: var(--no); }
+  .perm .glyph { font-size: 13px; line-height: 1; }
+
+  /* ---------- Steps ---------- */
+  .steps { max-width: 700px; counter-reset: step; margin: 0; padding: 0; list-style: none; }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 4px 0 4px 52px;
+    margin-bottom: 26px;
+  }
+  .steps li:last-child { margin-bottom: 0; }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .steps h3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 16px;
+    margin: 3px 0 5px;
+    color: var(--ink);
+  }
+  .steps p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+  .steps code, .prose code {
+    font-family: var(--font-mono);
+    background: var(--surface-2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: var(--ink);
+  }
+  .note {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--view-bg); color: var(--view);
+    border-radius: 8px; padding: 12px 14px; margin-top: 16px;
+    font-size: 13.5px; line-height: 1.55; max-width: 700px;
+  }
+  .note strong { color: inherit; }
+
+  /* ---------- Two-column status ---------- */
+  .status-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  @media (max-width: 620px) { .status-grid { grid-template-columns: 1fr; } }
+  .status-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 20px 22px; box-shadow: var(--shadow);
+  }
+  .status-card h3 {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 14px;
+  }
+  .status-card.done h3 { color: var(--ok); }
+  .status-card.next h3 { color: var(--ink-faint); }
+  .status-card ul { margin: 0; padding: 0; list-style: none; }
+  .status-card li {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: 14.5px; color: var(--ink-soft);
+    padding: 7px 0; border-top: 1px solid var(--line);
+  }
+  .status-card li:first-child { border-top: none; padding-top: 0; }
+  .status-card.done li::before { content: "✓"; color: var(--ok); font-weight: 700; flex-shrink: 0; }
+  .status-card.next li::before { content: "–"; color: var(--ink-faint); font-weight: 700; flex-shrink: 0; }
+
+  /* ---------- Credentials ---------- */
+  .cred-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--accent-soft); box-shadow: var(--shadow); }
+  table.cred { min-width: 560px; background: var(--surface); }
+  table.cred thead th { background: var(--surface-2); }
+  table.cred td.mono, table.cred th.mono { font-family: var(--font-mono); font-size: 13.5px; }
+  table.cred td.pw { color: var(--ink-faint); }
+  .cred-caption {
+    font-size: 13px; color: var(--ink-faint); margin-top: 10px; max-width: 700px;
+  }
+
+  footer {
+    max-width: 960px; margin: 0 auto; padding: 40px 24px 0;
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-faint);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    section, header.masthead { animation: rise 0.5s ease-out both; }
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <p class="kicker">Internal reference · AL HABIB KNITTWEAR</p>
+  <h1 class="title">ERP &amp; Business Dashboard</h1>
+  <p class="dek">One system for party records, the yarn/fabric ledger, transactions, employees &amp; attendance, and CSV reports — with each of five roles seeing only what their job needs. This page is the one to hand someone before they log in.</p>
+  <div class="status-row">
+    <span class="chip live"><span class="dot"></span>Parties — live</span>
+    <span class="chip live"><span class="dot"></span>Yarn &amp; Fabric Ledger — live</span>
+    <span class="chip live"><span class="dot"></span>Transactions — live</span>
+    <span class="chip live"><span class="dot"></span>Employees &amp; Attendance — live</span>
+    <span class="chip live"><span class="dot"></span>Users &amp; Roles — live</span>
+    <span class="chip live"><span class="dot"></span>Reports (CSV) — live</span>
+  </div>
+</header>
+
+<section id="overview">
+  <p class="eyebrow">What it is</p>
+  <div class="prose">
+    <p class="lede">A shared record of every party you deal with — like MAGNUS — and every movement against their yarn/fabric account: yarn received, yarn returned, fabric dispatched, with the 2% process-loss allowance and running balance computed automatically, plus general payments and receivables.</p>
+    <p>Instead of one spreadsheet per person, everyone works from the same live list. Who can only look, and who can add or change something, depends on the role they log in with — enforced by the server itself, not just hidden buttons.</p>
+  </div>
+</section>
+
+<section id="roles">
+  <p class="eyebrow">Who can do what</p>
+  <h2>Five roles, three levels of access</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Parties</th>
+          <th>Yarn Ledger</th>
+          <th>Transactions</th>
+          <th>Employees</th>
+          <th>Attendance</th>
+          <th>Reports</th>
+          <th>Users</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="role-name">Admin<div class="role-desc">Full control</div></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; export</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>create logins</span></td>
+        </tr>
+        <tr>
+          <td class="role-name">Manager<div class="role-desc">Runs day-to-day ops</div></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm none">no access</span></td>
+        </tr>
+        <tr>
+          <td class="role-name">Finance<div class="role-desc">Books &amp; payments</div></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm none">no access</span></td>
+          <td><span class="perm none">no access</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; export</span></td>
+          <td><span class="perm none">no access</span></td>
+        </tr>
+        <tr>
+          <td class="role-name">HR<div class="role-desc">Staff &amp; attendance</div></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm none">no access</span></td>
+          <td><span class="perm none">no access</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; add</span></td>
+          <td><span class="perm full"><span class="glyph">✓</span>view &amp; mark</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm none">no access</span></td>
+        </tr>
+        <tr>
+          <td class="role-name">Viewer<div class="role-desc">Read-only observer</div></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm view">view only</span></td>
+          <td><span class="perm none">no access</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <span>ⓘ</span>
+    <span><strong>This is enforced twice.</strong> The screen hides buttons a role can't use, and the server independently refuses the request even if someone tries anyway — so a Viewer account can never add or change a record, regardless of what the interface shows.</span>
+  </div>
+</section>
+
+<section id="yarn-ledger">
+  <p class="eyebrow">Procedure</p>
+  <h2>Adding a yarn/fabric ledger entry</h2>
+  <ol class="steps">
+    <li>
+      <h3>Open the party's page</h3>
+      <p>From <code>Parties</code>, click the party name — e.g. <code>MAGNUS</code>.</p>
+    </li>
+    <li>
+      <h3>Click Add Entry in the Yarn &amp; Fabric Ledger panel</h3>
+      <p>Visible to Admin, Manager, and Finance.</p>
+    </li>
+    <li>
+      <h3>Pick the movement type</h3>
+      <p><code>Yarn Received</code> or <code>Yarn Returned</code> ask for bags and kg. <code>Fabric Dispatched</code> asks for kg and a knitting rate (PKR/kg) instead — the 2% loss and billed amount are calculated automatically as you type, never entered by hand.</p>
+    </li>
+    <li>
+      <h3>Submit</h3>
+      <p>The running balance, count breakdown, and date-wise reconciliation table all update immediately.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="add-party">
+  <p class="eyebrow">Procedure</p>
+  <h2>Adding a party</h2>
+  <ol class="steps">
+    <li>
+      <h3>Sign in</h3>
+      <p>Use an Admin, Manager, or Finance login — the only roles with add access. See the credentials table below.</p>
+    </li>
+    <li>
+      <h3>Open Parties</h3>
+      <p>Click <code>Parties</code> in the top navigation.</p>
+    </li>
+    <li>
+      <h3>Click Add Party</h3>
+      <p>Fill in name, type (customer / vendor / both), phone, and email, then submit.</p>
+    </li>
+    <li>
+      <h3>Check for a duplicate warning</h3>
+      <p>If the name closely matches an existing party, a yellow notice lists the possible match. The new record is still created either way — the notice is a prompt to check, not a block.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="add-transaction">
+  <p class="eyebrow">Procedure</p>
+  <h2>Adding transaction data</h2>
+  <ol class="steps">
+    <li>
+      <h3>Open the party's page</h3>
+      <p>From the <code>Parties</code> list, click the party name to reach its detail page.</p>
+    </li>
+    <li>
+      <h3>Click Add Transaction</h3>
+      <p>In the Transactions panel — visible to Admin, Manager, and Finance.</p>
+    </li>
+    <li>
+      <h3>Fill in the entry</h3>
+      <p>Type — receivable, payable, payment in, payment out, or adjustment — plus date, amount, and a description. For yarn/fabric movements specifically, use the Yarn &amp; Fabric Ledger above instead — it tracks bags/kg and computes loss automatically.</p>
+    </li>
+    <li>
+      <h3>Submit</h3>
+      <p>The entry appears at the top of that party's ledger immediately, newest first.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="employees">
+  <p class="eyebrow">Procedure</p>
+  <h2>Adding an employee &amp; marking attendance</h2>
+  <ol class="steps">
+    <li>
+      <h3>Open Employees, click Add Employee</h3>
+      <p>Admin, Manager (view only), and HR (full access) can see this. Enter name, national ID, phone, and/or email.</p>
+    </li>
+    <li>
+      <h3>Duplicate protection is automatic</h3>
+      <p>An exact match on national ID, email, or phone against <em>any</em> existing employee — active or not — is blocked outright, with a link to the existing record. A similar name with no exact match is allowed through, with a warning.</p>
+    </li>
+    <li>
+      <h3>Mark attendance from the employee's page</h3>
+      <p>Pick a date and status (present, absent, late, half day, leave, holiday, weekend), optionally check-in/check-out times — working hours are calculated automatically. Marking the same day again updates that day rather than creating a duplicate.</p>
+    </li>
+    <li>
+      <h3>Change status as needed</h3>
+      <p>Candidate → Active → Inactive/Resigned/Terminated, reversible back to Active. Nothing is ever deleted — attendance history stays intact regardless of current status.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="users-reports">
+  <p class="eyebrow">Procedure</p>
+  <h2>Creating a login &amp; exporting reports</h2>
+  <ol class="steps">
+    <li>
+      <h3>Open Users, click Add User</h3>
+      <p>Admin only. Set a temporary password and pick a role from the dropdown — the new person must change that password the first time they sign in.</p>
+    </li>
+    <li>
+      <h3>Download a CSV from Reports</h3>
+      <p>Parties, Transactions, or the Yarn &amp; Fabric Ledger — optionally filtered to one party. Visible to anyone with reports access; Finance and Admin can also re-import.</p>
+    </li>
+    <li>
+      <h3>Re-import a Yarn Ledger CSV</h3>
+      <p>Edit the exported file and upload it back on the same page — loss and billed amount are always recalculated from kg/rate, never taken from the file, so an edited spreadsheet can't quietly disagree with the ledger's own math.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="status">
+  <p class="eyebrow">Build status</p>
+  <h2>What's working today, what isn't yet</h2>
+  <div class="status-grid">
+    <div class="status-card done">
+      <h3>Live now</h3>
+      <ul>
+        <li>Party records — add, search, deactivate</li>
+        <li>Yarn/fabric ledger — bags, kg, 2% loss, running balance</li>
+        <li>Date-wise reconciliation &amp; yarn-count breakdown</li>
+        <li>Transaction ledger per party — add &amp; view</li>
+        <li>Employees — add with duplicate prevention, lifecycle status</li>
+        <li>Attendance — per-day records, auto-computed hours</li>
+        <li>Users &amp; Roles admin screen — create logins without touching a script</li>
+        <li>Reports — CSV export (parties/transactions/yarn ledger) &amp; CSV re-import</li>
+        <li>Role-based access, enforced on the server</li>
+        <li>Duplicate-party warning on add</li>
+        <li>Dashboard totals — party &amp; transaction counts</li>
+      </ul>
+    </div>
+    <div class="status-card next">
+      <h3>Not built yet</h3>
+      <ul>
+        <li>An audit log viewer (entries are recorded, just not browsable yet)</li>
+        <li>PDF export (CSV only for now)</li>
+        <li>Importing the original spreadsheet files directly (this ledger was entered by hand from them; CSV re-import above is a narrower working substitute)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="access">
+  <p class="eyebrow">Access</p>
+  <h2>Demo logins, one per role</h2>
+  <div class="cred-wrap">
+    <table class="cred">
+      <thead>
+        <tr><th>Role</th><th class="mono">Email</th><th>Password</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="role-name">Admin</td><td class="mono">admin@erp-dashboard.app</td><td class="pw mono">ChangeMe123!</td></tr>
+        <tr><td class="role-name">Manager</td><td class="mono">manager@erp-dashboard.app</td><td class="pw mono">ChangeMe123!</td></tr>
+        <tr><td class="role-name">Finance</td><td class="mono">finance@erp-dashboard.app</td><td class="pw mono">ChangeMe123!</td></tr>
+        <tr><td class="role-name">HR</td><td class="mono">hr@erp-dashboard.app</td><td class="pw mono">ChangeMe123!</td></tr>
+        <tr><td class="role-name">Viewer</td><td class="mono">viewer@erp-dashboard.app</td><td class="pw mono">ChangeMe123!</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cred-caption">These run only on this computer, at <code>localhost:3000</code> — they won't work from another device. Seeded for testing; replace them before anyone outside the team uses the system.</p>
+</section>
+
+<footer>
+  <span>ERP &amp; Business Dashboard — internal reference</span>
+  <span>localhost:3000</span>
+</footer>
+
+</body>
+</html>
