@@ -17,9 +17,12 @@ import type {
   Transaction,
   YarnLedgerEntry,
   YarnMovementType,
+  GatePass,
+  GatePassType,
+  GatePassStatus,
 } from "@/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://erp-software-production-f7d1.up.railway.app";
 const TOKEN_STORAGE_KEY = "erp_access_token";
 
 export function getToken(): string | null {
@@ -310,3 +313,43 @@ export async function importYarnLedgerCsv(partyId: string, file: File): Promise<
   }
   return response.json();
 }
+
+// ---- Gate Passes ----
+
+export interface ListGatePassesParams {
+  type?: GatePassType;
+  partyId?: string;
+  status?: GatePassStatus;
+  q?: string;
+  cursor?: string;
+  limit?: number;
+}
+
+export async function listGatePasses(params: ListGatePassesParams = {}): Promise<Page<GatePass>> {
+  const search = new URLSearchParams();
+  if (params.type) search.set("type", params.type);
+  if (params.partyId) search.set("partyId", params.partyId);
+  if (params.status) search.set("status", params.status);
+  if (params.q) search.set("q", params.q);
+  if (params.cursor) search.set("cursor", params.cursor);
+  if (params.limit) search.set("limit", params.limit.toString());
+  const query = search.toString();
+  return apiFetch(`/api/v1/gate-passes${query ? `?${query}` : ""}`);
+}
+
+export async function getGatePass(id: string): Promise<GatePass> {
+  return apiFetch(`/api/v1/gate-passes/${id}`);
+}
+
+export async function createGatePass(payload: any): Promise<GatePass> {
+  return apiFetch("/api/v1/gate-passes", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export async function updateGatePass(id: string, payload: any): Promise<GatePass> {
+  return apiFetch(`/api/v1/gate-passes/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
+}
+
+export async function deleteGatePass(id: string): Promise<void> {
+  await apiFetch(`/api/v1/gate-passes/${id}`, { method: "DELETE" });
+}
+
