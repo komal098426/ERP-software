@@ -473,7 +473,7 @@ function OgpContent() {
                 </Button>
                 <Button
                   type="button"
-                  variant="muted"
+                  variant="outline"
                   onClick={() => {
                     resetForm();
                     setShowForm(false);
@@ -521,7 +521,7 @@ function OgpContent() {
 
             {(search || statusFilter || dateFilter) && (
               <Button
-                variant="muted"
+                variant="outline"
                 onClick={() => {
                   setSearch("");
                   setStatusFilter("");
@@ -683,7 +683,7 @@ function OgpContent() {
               )}
 
               <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-4 mt-2">
-                <Button variant="muted" onClick={() => setViewingGp(null)}>
+                <Button variant="outline" onClick={() => setViewingGp(null)}>
                   Close
                 </Button>
               </div>
