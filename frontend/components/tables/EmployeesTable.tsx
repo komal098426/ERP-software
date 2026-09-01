@@ -1,6 +1,7 @@
 import Link from "next/link";
-import type { Employee } from "@/types";
+import type { Employee, EmployeeStatus } from "@/types";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const STATUS_VARIANT: Record<Employee["status"], "success" | "warning" | "muted"> = {
   candidate: "warning",
@@ -10,7 +11,15 @@ const STATUS_VARIANT: Record<Employee["status"], "success" | "warning" | "muted"
   terminated: "muted",
 };
 
-export function EmployeesTable({ employees }: { employees: Employee[] }) {
+export function EmployeesTable({
+  employees,
+  canEdit = false,
+  onRequestStatusChange,
+}: {
+  employees: Employee[];
+  canEdit?: boolean;
+  onRequestStatusChange?: (employee: Employee, next: EmployeeStatus) => void;
+}) {
   if (employees.length === 0) {
     return <p className="py-8 text-center text-sm text-slate-400">No employees found.</p>;
   }
@@ -24,6 +33,7 @@ export function EmployeesTable({ employees }: { employees: Employee[] }) {
           <th className="py-2 pr-4 font-medium">Department</th>
           <th className="py-2 pr-4 font-medium">Contact</th>
           <th className="py-2 pr-4 font-medium">Status</th>
+          {canEdit ? <th className="py-2 pr-4 font-medium">Action</th> : null}
         </tr>
       </thead>
       <tbody>
@@ -40,6 +50,19 @@ export function EmployeesTable({ employees }: { employees: Employee[] }) {
             <td className="py-2 pr-4">
               <Badge variant={STATUS_VARIANT[employee.status]}>{employee.status}</Badge>
             </td>
+            {canEdit ? (
+              <td className="py-2 pr-4">
+                {employee.status === "active" ? (
+                  <Button size="sm" variant="outline" onClick={() => onRequestStatusChange?.(employee, "inactive")}>
+                    Deactivate
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="outline" onClick={() => onRequestStatusChange?.(employee, "active")}>
+                    Activate
+                  </Button>
+                )}
+              </td>
+            ) : null}
           </tr>
         ))}
       </tbody>

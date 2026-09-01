@@ -19,7 +19,7 @@ ROLE_PERMISSIONS: dict[str, list[tuple[str, str]]] = {
         (module, action)
         for module in [
             "dashboard", "parties", "transactions", "yarn_ledger", "reconciliation", "analytics",
-            "reports", "employees", "attendance", "hrms", "users", "settings",
+            "reports", "employees", "attendance", "hrms", "users", "settings", "gate_passes",
         ]
         for action in ("read", "write")
     ] + [("audit_logs", "read")],
@@ -29,6 +29,7 @@ ROLE_PERMISSIONS: dict[str, list[tuple[str, str]]] = {
         ("yarn_ledger", "read"), ("yarn_ledger", "write"),
         ("reconciliation", "read"), ("analytics", "read"), ("reports", "read"),
         ("employees", "read"), ("attendance", "read"),
+        ("gate_passes", "read"), ("gate_passes", "write"),
     ],
     "HR": [
         ("dashboard", "read"), ("parties", "read"), ("analytics", "read"),
@@ -41,12 +42,14 @@ ROLE_PERMISSIONS: dict[str, list[tuple[str, str]]] = {
         ("yarn_ledger", "read"), ("yarn_ledger", "write"),
         ("reconciliation", "read"), ("reconciliation", "write"),
         ("analytics", "read"), ("reports", "read"), ("reports", "write"),
+        ("gate_passes", "read"), ("gate_passes", "write"),
     ],
     "Viewer": [
         ("dashboard", "read"), ("parties", "read"), ("transactions", "read"),
         ("yarn_ledger", "read"),
         ("reconciliation", "read"), ("analytics", "read"), ("reports", "read"),
         ("employees", "read"), ("attendance", "read"),
+        ("gate_passes", "read"),
     ],
 }
 

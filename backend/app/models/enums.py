@@ -87,3 +87,15 @@ class AuditAction(str, enum.Enum):
     reactivated = "reactivated"
     reconciled = "reconciled"
     exported = "exported"
+
+
+class GatePassType(str, enum.Enum):
+    igp = "igp"
+    ogp = "ogp"
+
+
+class GatePassStatus(str, enum.Enum):
+    pending = "pending"
+    received = "received"
+    completed = "completed"
+

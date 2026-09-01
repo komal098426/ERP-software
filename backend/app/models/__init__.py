@@ -8,6 +8,7 @@ from app.models.reconciliation import ReconciliationRecord
 from app.models.salary_history import SalaryHistoryEntry
 from app.models.transaction import Transaction
 from app.models.yarn_ledger import YarnLedgerEntry
+from app.models.gate_pass import GatePass
 
 __all__ = [
     "AttendanceRecord",
@@ -24,4 +25,6 @@ __all__ = [
     "SalaryHistoryEntry",
     "Transaction",
     "YarnLedgerEntry",
+    "GatePass",
 ]
+

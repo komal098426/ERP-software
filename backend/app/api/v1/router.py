@@ -11,6 +11,7 @@ from app.api.v1 import (
     transactions,
     users,
     yarn_ledger,
+    gate_passes,
 )
 
 api_router = APIRouter(prefix="/api/v1")
@@ -24,3 +25,5 @@ api_router.include_router(users.router)
 api_router.include_router(reports.router)
 api_router.include_router(import_data.router)
 api_router.include_router(analytics.router)
+api_router.include_router(gate_passes.router)
+

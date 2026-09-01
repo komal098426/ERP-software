@@ -11,10 +11,12 @@ const PERMISSIONS: Record<string, Record<string, Access>> = {
     dashboard: "write", parties: "write", transactions: "write", yarn_ledger: "write",
     reconciliation: "write", analytics: "write", reports: "write", employees: "write",
     attendance: "write", hrms: "write", users: "write", settings: "write", audit_logs: "read",
+    gate_passes: "write",
   },
   Manager: {
     dashboard: "read", parties: "write", transactions: "write", yarn_ledger: "write",
     reconciliation: "read", analytics: "read", reports: "read", employees: "read", attendance: "read",
+    gate_passes: "write",
   },
   HR: {
     dashboard: "read", parties: "read", analytics: "read", reports: "read",
@@ -23,10 +25,12 @@ const PERMISSIONS: Record<string, Record<string, Access>> = {
   Finance: {
     dashboard: "read", parties: "write", transactions: "write", yarn_ledger: "write",
     reconciliation: "write", analytics: "read", reports: "write",
+    gate_passes: "write",
   },
   Viewer: {
     dashboard: "read", parties: "read", transactions: "read", yarn_ledger: "read",
     reconciliation: "read", analytics: "read", reports: "read", employees: "read", attendance: "read",
+    gate_passes: "read",
   },
 };
 

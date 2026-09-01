@@ -46,9 +46,24 @@ export interface RegisterResponse {
   message: string;
 }
 
+export interface MonthlyPoint {
+  month: string;           // "YYYY-MM"
+  dispatched_kg: string;
+  received_kg: string;
+  billed_amount: string;
+}
+
 export interface AnalyticsSummary {
   party_count: number;
   transaction_count: number;
+  yarn_entry_count: number;
+  total_received_kg: string;
+  total_returned_kg: string;
+  total_dispatched_kg: string;
+  total_loss_kg: string;
+  balance_kg: string;
+  total_billed_amount: string;
+  monthly_trend: MonthlyPoint[];
 }
 
 export type TransactionEntryType = "receivable" | "payable" | "payment_in" | "payment_out" | "adjustment";
@@ -188,3 +203,30 @@ export interface ImportSummary {
   created: number;
   skipped: ImportRowError[];
 }
+
+export type GatePassType = "igp" | "ogp";
+export type GatePassStatus = "pending" | "received" | "completed";
+
+export interface GatePass {
+  id: string;
+  gate_pass_number: string;
+  type: GatePassType;
+  date: string;
+  party_id: string;
+  party_name: string | null;
+  returnable: boolean;
+  material: string;
+  yarn_count: string | null;
+  yarn_type: string | null;
+  bags_rolls: string | null;
+  weight: string;
+  quantity: string;
+  yarn_return: string | null;
+  expected_return: string | null;
+  store_destination: string | null;
+  status: GatePassStatus;
+  remarks: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
