@@ -22,7 +22,9 @@ import type {
   GatePassStatus,
 } from "@/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://erp-software-production-f7d1.up.railway.app";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  (typeof window !== "undefined" ? "" : "https://erp-software-production-f7d1.up.railway.app");
 const TOKEN_STORAGE_KEY = "erp_access_token";
 
 export function getToken(): string | null {
