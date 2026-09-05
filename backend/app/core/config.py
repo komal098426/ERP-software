@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url: str = "sqlite:///./dev.db"
+    database_url: str = "postgresql://postgres.kujdorplejooezjspbcv:khaommiald3116@aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres"
     jwt_secret: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 480
