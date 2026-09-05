@@ -19,7 +19,7 @@ Run with: python -m app.import_magnus_ledger
 from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.db.session import SessionLocal
 from app.models.audit_log import AuditLogEntry
@@ -97,13 +97,18 @@ def remove_superseded_transaction_hack(db, party_id) -> None:
         print(f"Removed {removed} superseded Transaction rows (now represented as YarnLedgerEntry).")
 
 
+def _next_party_code(db) -> str:
+    count = db.scalar(select(func.count()).select_from(Party)) or 0
+    return f"PTY-{count + 1:04d}"
+
+
 def get_or_create_magnus(db, admin: User) -> Party:
     existing = db.scalar(select(Party).where(Party.normalized_name == normalize_name(MAGNUS_NAME)))
     if existing is not None:
         return existing
 
     party = Party(
-        party_code="PTY-0001",
+        party_code=_next_party_code(db),
         name=MAGNUS_NAME,
         normalized_name=normalize_name(MAGNUS_NAME),
         type=PartyType.customer,

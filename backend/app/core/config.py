@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     jwt_secret: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 480
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = "http://localhost:3000,http://localhost:3001,https://erp-software-pied.vercel.app"
 
     @property
     def cors_origin_list(self) -> list[str]:
