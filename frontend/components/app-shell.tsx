@@ -47,8 +47,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-            <span>Al Habib Knitwear</span>
+          <div className="flex items-center gap-2 text-xs text-slate-700 font-semibold">
+            <img src="/logo.png" alt="Logo" className="h-6 w-auto object-contain rounded" />
+            <span className="hidden sm:inline tracking-tight text-navy-900">Al Habib Knitwear</span>
           </div>
         </header>
 

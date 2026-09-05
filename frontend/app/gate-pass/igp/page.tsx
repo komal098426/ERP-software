@@ -65,7 +65,7 @@ function IgpContent() {
   const [manualGpNo, setManualGpNo] = useState("56");
   const [unit, setUnit] = useState("S2");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [department, setDepartment] = useState("Production (LS2)");
+  const [department, setDepartment] = useState("Knitting");
   const [pageNo, setPageNo] = useState("1");
   const [printDate, setPrintDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [copyNo, setCopyNo] = useState("Copy 3 of 4");
@@ -279,37 +279,43 @@ function IgpContent() {
       {/* EXACT GATE PASS FORM (AL HABIB KNITWEAR - IGP)                            */}
       {/* ========================================================================= */}
       <div className="mx-auto w-full max-w-5xl bg-white text-black p-8 rounded-lg shadow-lg border border-slate-300 print:shadow-none print:border-none print:p-2 print:max-w-none font-sans text-xs">
-        
-        {/* Header Title Section */}
-        <div className="text-center mb-4">
-          <input
-            type="text"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-            className="text-2xl md:text-3xl font-black tracking-wider text-center w-full uppercase outline-none focus:bg-amber-50/50 border-b border-transparent focus:border-slate-300 text-black"
-            placeholder="COMPANY NAME"
-          />
-          <div className="flex items-center justify-center gap-2 mt-1">
-            <span className="text-base md:text-lg font-bold tracking-wide">
-              INWARD GATE PASS (
-            </span>
-            <select
-              value={passType}
-              onChange={(e) => setPassType(e.target.value as any)}
-              className="text-base md:text-lg font-bold bg-transparent border-b border-slate-300 outline-none text-navy-950 print:border-none cursor-pointer"
-            >
-              <option value="NORMAL">NORMAL</option>
-              <option value="RETURNABLE">RETURNABLE</option>
-            </select>
-            <span className="text-base md:text-lg font-bold tracking-wide">)</span>
+
+        {/* Header Title Section with Logo */}
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="h-16 w-16 shrink-0 flex items-center justify-center">
+            <img src="/logo.png" alt="Logo" className="max-h-full max-w-full object-contain" />
           </div>
-          <input
-            type="text"
-            value={subTitle}
-            onChange={(e) => setSubTitle(e.target.value)}
-            className="text-xs md:text-sm font-semibold tracking-wider text-center w-full uppercase mt-1 outline-none focus:bg-amber-50/50 border-b border-transparent focus:border-slate-300 text-slate-800"
-            placeholder="GENERAL ITEMS (LOCAL) (NORMAL)"
-          />
+          <div className="text-center flex-1">
+            <input
+              type="text"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              className="text-2xl md:text-3xl font-black tracking-wider text-center w-full uppercase outline-none focus:bg-amber-50/50 border-b border-transparent focus:border-slate-300 text-black"
+              placeholder="COMPANY NAME"
+            />
+            <div className="flex items-center justify-center gap-2 mt-1">
+              <span className="text-base md:text-lg font-bold tracking-wide">
+                INWARD GATE PASS (
+              </span>
+              <select
+                value={passType}
+                onChange={(e) => setPassType(e.target.value as any)}
+                className="text-base md:text-lg font-bold bg-transparent border-b border-slate-300 outline-none text-navy-950 print:border-none cursor-pointer"
+              >
+                <option value="NORMAL">NORMAL</option>
+                <option value="RETURNABLE">RETURNABLE</option>
+              </select>
+              <span className="text-base md:text-lg font-bold tracking-wide">)</span>
+            </div>
+            <input
+              type="text"
+              value={subTitle}
+              onChange={(e) => setSubTitle(e.target.value)}
+              className="text-xs md:text-sm font-semibold tracking-wider text-center w-full uppercase mt-1 outline-none focus:bg-amber-50/50 border-b border-transparent focus:border-slate-300 text-slate-800"
+              placeholder="GENERAL ITEMS (LOCAL) (NORMAL)"
+            />
+          </div>
+          <div className="h-16 w-16 shrink-0 hidden md:block"></div>
         </div>
 
         {/* Top Metadata Grid */}
@@ -372,13 +378,15 @@ function IgpContent() {
             <div className="grid grid-cols-12 items-center">
               <span className="col-span-4 font-bold">Department</span>
               <div className="col-span-8">
-                <input
-                  type="text"
+                <select
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  placeholder="Production (LS2)"
-                  className="w-full font-semibold px-1 py-0.5 border border-slate-300 rounded focus:bg-amber-50/50 outline-none print:border-none print:p-0"
-                />
+                  className="w-full font-semibold px-1 py-0.5 border border-slate-300 rounded bg-white focus:bg-amber-50/50 outline-none print:border-none print:p-0 cursor-pointer"
+                >
+                  <option value="Knitting">Knitting</option>
+                  <option value="Dyeing">Dyeing</option>
+                  <option value="Shipment">Shipment</option>
+                </select>
               </div>
             </div>
 

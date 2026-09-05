@@ -52,15 +52,25 @@ export function Nav({ isCollapsed, onToggleCollapse }: NavProps) {
       }`}
     >
       {/* Sidebar Header with Toggle/Close Button */}
-      <div className="flex items-center justify-between px-4 py-3.5 border-b border-navy-800">
-        <span className="text-sm font-semibold tracking-wide truncate">
-          ERP & Business Dashboard
-        </span>
+      <div className="flex items-center justify-between px-3 py-3 border-b border-navy-800">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="h-8 w-8 rounded-md bg-white p-0.5 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+            <img src="/logo.png" alt="Al Habib Knitwear" className="h-full w-full object-contain" />
+          </div>
+          <div className="min-w-0 flex flex-col">
+            <span className="text-xs font-bold tracking-tight text-white truncate leading-tight">
+              AL HABIB
+            </span>
+            <span className="text-[10px] text-slate-400 tracking-wider truncate leading-none">
+              KNITWEAR
+            </span>
+          </div>
+        </div>
         <button
           type="button"
           onClick={onToggleCollapse}
           title="Close Sidebar"
-          className="rounded p-1.5 text-slate-400 hover:bg-navy-800 hover:text-white transition-colors"
+          className="rounded p-1.5 text-slate-400 hover:bg-navy-800 hover:text-white transition-colors shrink-0"
         >
           <svg
             className="h-4 w-4"
