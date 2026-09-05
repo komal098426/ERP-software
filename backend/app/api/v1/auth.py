@@ -14,15 +14,23 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login", response_model=TokenResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
-    user = db.scalar(select(User).where(User.email == payload.email))
-    if user is None or not verify_password(payload.password, user.hashed_password):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
-    if not user.is_active:
-        detail = "Your account is pending administrator approval." if not user.roles else "Account is inactive"
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail=detail)
+    try:
+        user = db.scalar(select(User).where(User.email == payload.email))
+        if user is None or not verify_password(payload.password, user.hashed_password):
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+        if not user.is_active:
+            detail = "Your account is pending administrator approval." if not user.roles else "Account is inactive"
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail=detail)
 
-    token = create_access_token(subject=str(user.id))
-    return TokenResponse(access_token=token)
+        token = create_access_token(subject=str(user.id))
+        return TokenResponse(access_token=token)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database authentication error: {type(exc).__name__}: {str(exc)}",
+        )
 
 
 @router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)

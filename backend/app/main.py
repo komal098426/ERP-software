@@ -59,3 +59,30 @@ app.include_router(api_router)
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
+
+@app.get("/health/db")
+def health_db() -> dict:
+    from app.db.session import SessionLocal
+    from app.models.rbac import User
+    from app.models.party import Party
+    db = SessionLocal()
+    try:
+        user_count = db.query(User).count()
+        party_count = db.query(Party).count()
+        return {
+            "status": "connected",
+            "database_url_scheme": settings.database_url.split("://")[0],
+            "database_host": settings.database_url.split("@")[-1].split("/")[0] if "@" in settings.database_url else "local",
+            "users_count": user_count,
+            "parties_count": party_count,
+        }
+    except Exception as exc:
+        return {
+            "status": "error",
+            "error_type": type(exc).__name__,
+            "error_detail": str(exc),
+        }
+    finally:
+        db.close()
+
+
