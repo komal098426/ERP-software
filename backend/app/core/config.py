@@ -12,7 +12,15 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        cleaned = []
+        for o in self.cors_origins.split(","):
+            o = o.strip()
+            if "[" in o and "](" in o:
+                # extract URL inside [text](url) markdown syntax
+                o = o.split("](")[-1].rstrip(")")
+            if o:
+                cleaned.append(o)
+        return cleaned
 
     @property
     def sqlalchemy_database_url(self) -> str:
