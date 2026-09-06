@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import asyncio
 import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,8 +11,7 @@ from app.core.config import settings
 logger = logging.getLogger("uvicorn.error")
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+def _init_db_in_background():
     try:
         from app.db.base import Base
         from app.db.session import engine, SessionLocal
@@ -25,9 +25,17 @@ async def lifespan(app: FastAPI):
             seed_demo_users(db, roles)
         finally:
             db.close()
-        logger.info("Database initialized and seeded successfully.")
+        logger.info("Background database initialization and seed completed successfully.")
     except Exception as exc:
-        logger.error(f"Startup database initialization error: {exc}", exc_info=True)
+        logger.error(f"Background database initialization error: {exc}", exc_info=True)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Run DB initialization asynchronously in a worker thread so the server accepts healthcheck requests immediately
+    loop = asyncio.get_running_loop()
+    loop.run_in_executor(None, _init_db_in_background)
+    logger.info("FastAPI server started. Healthcheck endpoints are ready.")
     yield
 
 
@@ -55,9 +63,11 @@ async def global_exception_handler(request: Request, exc: Exception):
 app.include_router(api_router)
 
 
+@app.get("/")
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
 
 
 @app.get("/health/db")
@@ -71,8 +81,8 @@ def health_db() -> dict:
         party_count = db.query(Party).count()
         return {
             "status": "connected",
-            "database_url_scheme": settings.database_url.split("://")[0],
-            "database_host": settings.database_url.split("@")[-1].split("/")[0] if "@" in settings.database_url else "local",
+            "database_url_scheme": settings.sqlalchemy_database_url.split("://")[0],
+            "database_host": settings.sqlalchemy_database_url.split("@")[-1].split("/")[0] if "@" in settings.sqlalchemy_database_url else "local",
             "users_count": user_count,
             "parties_count": party_count,
         }
