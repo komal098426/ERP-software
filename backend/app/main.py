@@ -96,3 +96,17 @@ def health_db() -> dict:
         db.close()
 
 
+
+@app.get("/debug/env-check")
+def env_check() -> dict:
+    """
+    Safe debug endpoint: checks if critical Supabase env vars are present and non-empty.
+    Does NOT return the actual values.
+    """
+    import os
+    return {
+        "SUPABASE_URL": "present" if os.getenv("SUPABASE_URL") else "missing",
+        "SUPABASE_ANON_KEY": "present" if os.getenv("SUPABASE_ANON_KEY") else "missing",
+        "SUPABASE_SERVICE_ROLE_KEY": "present" if os.getenv("SUPABASE_SERVICE_ROLE_KEY") else "missing",
+        "DATABASE_URL": "present" if os.getenv("DATABASE_URL") else "missing",
+    }
