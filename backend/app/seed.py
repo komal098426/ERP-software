@@ -7,7 +7,7 @@ Real party/ledger data is imported separately -- see app/import_magnus_ledger.py
 
 from sqlalchemy import select
 
-from app.core.security import hash_password
+from app.core import supabase_auth
 from app.db.session import SessionLocal
 from app.models.rbac import Permission, Role, RolePermission, User, UserRole
 
@@ -104,10 +104,14 @@ def seed_demo_user(db, role: Role, email: str, full_name: str) -> User:
     if user is not None:
         return user
 
+    # Provision the demo account in Supabase Auth too, since login now authenticates against
+    # Supabase rather than a local password hash (requires SUPABASE_SERVICE_ROLE_KEY to be set).
+    auth_account = supabase_auth.admin_create_user(email, DEFAULT_ADMIN_PASSWORD)
+
     user = User(
         email=email,
         full_name=full_name,
-        hashed_password=hash_password(DEFAULT_ADMIN_PASSWORD),
+        auth_user_id=auth_account["id"],
         must_change_password=True,
     )
     db.add(user)

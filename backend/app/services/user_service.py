@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.security import hash_password
+from app.core import supabase_auth
 from app.models.enums import AuditAction
 from app.models.rbac import Role, User, UserRole
 from app.schemas.auth import RegisterRequest
@@ -19,10 +19,15 @@ def register_user(db: Session, payload: RegisterRequest) -> User:
     if db.scalar(select(User).where(User.email == payload.email)) is not None:
         raise HTTPException(status.HTTP_409_CONFLICT, detail=f"A user with email {payload.email} already exists")
 
+    try:
+        auth_account = supabase_auth.admin_create_user(payload.email, payload.password)
+    except supabase_auth.SupabaseAuthError as exc:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
     user = User(
         email=payload.email,
         full_name=payload.full_name,
-        hashed_password=hash_password(payload.password),
+        auth_user_id=UUID(auth_account["id"]),
         is_active=False,
         must_change_password=False,
     )
@@ -68,10 +73,15 @@ def create_user(db: Session, payload: UserCreate, *, created_by: UUID | None) ->
     if role is None:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f"Unknown role: {payload.role_name}")
 
+    try:
+        auth_account = supabase_auth.admin_create_user(payload.email, payload.password)
+    except supabase_auth.SupabaseAuthError as exc:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
     user = User(
         email=payload.email,
         full_name=payload.full_name,
-        hashed_password=hash_password(payload.password),
+        auth_user_id=UUID(auth_account["id"]),
         must_change_password=True,
     )
     db.add(user)

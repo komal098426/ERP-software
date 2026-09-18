@@ -145,20 +145,8 @@ export function Nav({ isCollapsed, onToggleCollapse }: NavProps) {
           </Link>
         )}
 
-        {/* Inventory Placeholder */}
-        <div className="block rounded-md px-3 py-2 text-sm text-slate-500 cursor-not-allowed select-none opacity-60">
-          Inventory
-        </div>
 
-        {/* Yarn Placeholder */}
-        <div className="block rounded-md px-3 py-2 text-sm text-slate-500 cursor-not-allowed select-none opacity-60">
-          Yarn
-        </div>
 
-        {/* Stores Placeholder */}
-        <div className="block rounded-md px-3 py-2 text-sm text-slate-500 cursor-not-allowed select-none opacity-60">
-          Stores
-        </div>
 
         {/* Gate Pass Menu */}
         {canRead(user, "gate_passes") && (

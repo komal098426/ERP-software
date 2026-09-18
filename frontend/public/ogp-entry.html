@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OGP – Outward Gate Pass | Al Habib Knitwear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh;padding:24px 16px 60px}
+    .screen-wrapper{max-width:900px;margin:0 auto}
+    .input-panel{background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.08);padding:24px 28px;margin-bottom:28px}
+    .input-panel h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:16px}
+    .meta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+    .field label{display:block;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+    .field input{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;color:#1a202c;background:#f8fafc;transition:border-color .2s,box-shadow .2s;outline:none}
+    .field input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12);background:#fff}
+    .entry-row{display:grid;grid-template-columns:60px 1fr 90px 90px 1fr auto;gap:10px;align-items:end;padding-top:16px;border-top:1.5px dashed #e2e8f0}
+    .btn-add{display:flex;align-items:center;justify-content:center;gap:6px;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap;height:38px}
+    .btn-add:hover{background:#1d4ed8}
+    .action-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+    .action-bar .spacer{flex:1}
+    .btn-print{display:flex;align-items:center;gap:7px;background:#0f172a;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+    .btn-print:hover{background:#1e293b}
+    .btn-clear{display:flex;align-items:center;gap:7px;background:transparent;color:#ef4444;border:1.5px solid #ef4444;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-clear:hover{background:#fef2f2}
+    .document{background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.08);padding:36px 40px 40px}
+    .doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-bottom:16px;border-bottom:2.5px solid #1e3a5f}
+    .company-block{display:flex;align-items:center;gap:14px}
+    .company-logo{width:52px;height:52px;background:#1e3a5f;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:800}
+    .company-name{font-size:18px;font-weight:800;color:#1e3a5f;line-height:1.2}
+    .company-sub{font-size:11px;color:#64748b;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+    .doc-title-block{text-align:right}
+    .doc-title{font-size:20px;font-weight:800;color:#1e3a5f;text-transform:uppercase;letter-spacing:.04em}
+    .doc-subtitle{font-size:11px;color:#64748b;margin-top:2px}
+    .doc-no{display:inline-block;margin-top:6px;background:#1e3a5f;color:#fff;font-size:13px;font-weight:700;padding:3px 14px;border-radius:20px}
+    .meta-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid #cbd5e1;border-radius:8px;overflow:hidden;margin-bottom:20px}
+    .meta-cell{padding:9px 14px;border-right:1px solid #cbd5e1}
+    .meta-cell:last-child{border-right:none}
+    .meta-cell-label{font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em}
+    .meta-cell-value{font-size:13px;font-weight:600;color:#1a202c;margin-top:2px;min-height:18px}
+    .table-wrap{border:1.5px solid #cbd5e1;border-radius:8px;overflow:hidden}
+    .items-table{width:100%;border-collapse:collapse;font-size:13px}
+    .items-table thead tr{background:#1e3a5f;color:#fff}
+    .items-table thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+    .items-table thead th:nth-child(1){width:50px;text-align:center}
+    .items-table thead th:nth-child(3){width:90px;text-align:center}
+    .items-table thead th:nth-child(4){width:90px;text-align:right}
+    .items-table tbody tr:nth-child(even){background:#f8fafc}
+    .items-table tbody tr{border-bottom:1px solid #e2e8f0}
+    .items-table tbody td{padding:10px 14px;vertical-align:middle}
+    .items-table tbody td:nth-child(1){text-align:center;color:#64748b;font-size:12px}
+    .items-table tbody td:nth-child(3){text-align:center}
+    .items-table tbody td:nth-child(4){text-align:right;font-weight:600}
+    .items-table tbody .empty-row td{text-align:center;color:#94a3b8;padding:40px 14px;font-size:13px}
+    .btn-del{background:none;border:none;cursor:pointer;color:#cbd5e1;font-size:16px;padding:2px 6px;border-radius:4px;transition:color .15s,background .15s}
+    .btn-del:hover{color:#ef4444;background:#fef2f2}
+    .totals-bar{display:flex;justify-content:flex-end;background:#f1f5f9;border:1.5px solid #cbd5e1;border-top:none;border-radius:0 0 8px 8px;padding:12px 20px;gap:40px;margin-bottom:28px}
+    .total-item{text-align:right}
+    .total-label{font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em}
+    .total-value{font-size:16px;font-weight:800;color:#1e3a5f;margin-top:1px}
+    .remarks-section{margin-bottom:28px}
+    .remarks-label{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+    .remarks-box{border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;min-height:38px;font-size:13px;color:#374151;background:#f8fafc}
+    .sig-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
+    .sig-block{text-align:center}
+    .sig-line{border-top:1.5px solid #334155;margin-bottom:6px;height:44px}
+    .sig-label{font-size:11px;font-weight:600;color:#334155;text-transform:uppercase;letter-spacing:.06em}
+    .doc-footer{margin-top:24px;padding-top:14px;border-top:1px dashed #cbd5e1;display:flex;justify-content:space-between;font-size:10px;color:#94a3b8}
+    @media print{
+      *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+      body{background:#fff!important;padding:0!important}
+      .input-panel,.action-bar,.btn-del{display:none!important}
+      .screen-wrapper{max-width:100%}
+      .document{box-shadow:none!important;border-radius:0!important;padding:20px 28px!important}
+      .items-table{font-size:11px!important}
+      .items-table thead th{font-size:10px!important;padding:7px 10px!important}
+      .items-table tbody td{padding:7px 10px!important}
+      @page{margin:15mm 12mm;size:A4 portrait}
+    }
+  </style>
+</head>
+<body>
+<div class="screen-wrapper">
+  <div class="input-panel">
+    <h2>Form Header</h2>
+    <div class="meta-grid">
+      <div class="field"><label>OGP No.</label><input id="f-ogp-no" type="text" placeholder="OGP-0001" oninput="syncMeta()" /></div>
+      <div class="field"><label>Date</label><input id="f-date" type="date" oninput="syncMeta()" /></div>
+      <div class="field"><label>From (Department)</label><input id="f-from" type="text" placeholder="e.g. Stitching" oninput="syncMeta()" /></div>
+      <div class="field"><label>To (Department / Party)</label><input id="f-to" type="text" placeholder="e.g. Finishing" oninput="syncMeta()" /></div>
+      <div class="field"><label>Ref / Order No.</label><input id="f-ref" type="text" placeholder="e.g. ORD-123" oninput="syncMeta()" /></div>
+      <div class="field"><label>Prepared By</label><input id="f-prepared" type="text" placeholder="Name" oninput="syncSigs()" /></div>
+    </div>
+    <h2 style="margin-top:4px">Add Item Row</h2>
+    <div class="entry-row">
+      <div class="field"><label>Sr #</label><input id="e-sr" type="text" placeholder="Auto" disabled style="background:#f1f5f9;color:#94a3b8" /></div>
+      <div class="field"><label>Description</label><input id="e-desc" type="text" placeholder="Item description..." onkeydown="handleKey(event)" /></div>
+      <div class="field"><label>UOM</label><input id="e-uom" type="text" placeholder="Pcs" onkeydown="handleKey(event)" /></div>
+      <div class="field"><label>Quantity</label><input id="e-qty" type="number" placeholder="0" min="0" onkeydown="handleKey(event)" /></div>
+      <div class="field"><label>Remarks</label><input id="e-rem" type="text" placeholder="Optional..." onkeydown="handleKey(event)" /></div>
+      <button class="btn-add" onclick="addRow()">+ Add</button>
+    </div>
+  </div>
+  <div class="action-bar">
+    <button class="btn-clear" onclick="clearAll()">Clear All</button>
+    <div class="spacer"></div>
+    <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+  </div>
+  <div class="document">
+    <div class="doc-header">
+      <div class="company-block">
+        <div class="company-logo">AH</div>
+        <div>
+          <div class="company-name">Al Habib Knitwear</div>
+          <div class="company-sub">ERP Management System</div>
+        </div>
+      </div>
+      <div class="doc-title-block">
+        <div class="doc-title">Outward Gate Pass</div>
+        <div class="doc-subtitle">Material Transfer / Dispatch Document</div>
+        <div class="doc-no" id="d-ogp-no">OGP-____</div>
+      </div>
+    </div>
+    <div class="meta-strip">
+      <div class="meta-cell"><div class="meta-cell-label">Date</div><div class="meta-cell-value" id="d-date">—</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">From</div><div class="meta-cell-value" id="d-from">—</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">To</div><div class="meta-cell-value" id="d-to">—</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">Ref / Order No.</div><div class="meta-cell-value" id="d-ref">—</div></div>
+    </div>
+    <div class="table-wrap">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Sr #</th><th>Description</th><th>UOM</th><th>Qty</th><th>Remarks</th><th style="width:36px"></th>
+          </tr>
+        </thead>
+        <tbody id="items-body">
+          <tr class="empty-row" id="empty-row"><td colspan="6">No items added yet — use the form above to add rows.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="totals-bar">
+      <div class="total-item"><div class="total-label">Total Items</div><div class="total-value" id="d-total-items">0</div></div>
+      <div class="total-item"><div class="total-label">Total Quantity</div><div class="total-value" id="d-total-qty">0</div></div>
+    </div>
+    <div class="remarks-section" style="margin-top:20px">
+      <div class="remarks-label">General Remarks</div>
+      <div class="remarks-box" id="d-remarks"></div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-block"><div class="sig-line"></div><div class="sig-label" id="sig-prepared">Prepared By</div></div>
+      <div class="sig-block"><div class="sig-line"></div><div class="sig-label">Checked By</div></div>
+      <div class="sig-block"><div class="sig-line"></div><div class="sig-label">Gate Officer</div></div>
+      <div class="sig-block"><div class="sig-line"></div><div class="sig-label">Approved By</div></div>
+    </div>
+    <div class="doc-footer">
+      <span>Al Habib Knitwear ERP — Outward Gate Pass</span>
+      <span id="d-print-time"></span>
+    </div>
+  </div>
+</div>
+<script>
+  var rows=[];
+  var today=new Date().toISOString().split('T')[0];
+  document.getElementById('f-date').value=today;
+  syncMeta();updatePrintTime();
+  function handleKey(e){if(e.key==='Enter')addRow();}
+  function addRow(){
+    var desc=document.getElementById('e-desc').value.trim();
+    var uom=document.getElementById('e-uom').value.trim()||'Pcs';
+    var qty=parseFloat(document.getElementById('e-qty').value)||0;
+    var rem=document.getElementById('e-rem').value.trim();
+    if(!desc){document.getElementById('e-desc').focus();document.getElementById('e-desc').style.borderColor='#ef4444';setTimeout(function(){document.getElementById('e-desc').style.borderColor=''},1200);return;}
+    rows.push({sr:rows.length+1,desc:desc,uom:uom,qty:qty,rem:rem});
+    clearEntryFields();renderTable();document.getElementById('e-desc').focus();
+  }
+  function deleteRow(i){rows.splice(i,1);rows.forEach(function(r,j){r.sr=j+1;});renderTable();}
+  function renderTable(){
+    var tbody=document.getElementById('items-body');
+    var emptyRow=document.getElementById('empty-row');
+    tbody.querySelectorAll('tr:not(#empty-row)').forEach(function(r){r.remove();});
+    if(rows.length===0){emptyRow.style.display='';}
+    else{
+      emptyRow.style.display='none';
+      rows.forEach(function(r,i){
+        var tr=document.createElement('tr');
+        tr.innerHTML='<td>'+r.sr+'</td><td>'+esc(r.desc)+'</td><td>'+esc(r.uom)+'</td><td>'+r.qty.toLocaleString()+'</td><td>'+esc(r.rem)+'</td><td><button class="btn-del" onclick="deleteRow('+i+')" title="Remove">x</button></td>';
+        tbody.appendChild(tr);
+      });
+    }
+    var totalQty=rows.reduce(function(s,r){return s+r.qty;},0);
+    document.getElementById('d-total-items').textContent=rows.length;
+    document.getElementById('d-total-qty').textContent=totalQty.toLocaleString();
+    document.getElementById('e-sr').placeholder=rows.length+1;
+  }
+  function syncMeta(){
+    var ogpNo=document.getElementById('f-ogp-no').value.trim()||'OGP-____';
+    var dateVal=document.getElementById('f-date').value;
+    document.getElementById('d-ogp-no').textContent=ogpNo;
+    document.getElementById('d-date').textContent=dateVal?new Date(dateVal+'T00:00:00').toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    document.getElementById('d-from').textContent=document.getElementById('f-from').value.trim()||'—';
+    document.getElementById('d-to').textContent=document.getElementById('f-to').value.trim()||'—';
+    document.getElementById('d-ref').textContent=document.getElementById('f-ref').value.trim()||'—';
+  }
+  function syncSigs(){var p=document.getElementById('f-prepared').value.trim();document.getElementById('sig-prepared').textContent=p?'Prepared By: '+p:'Prepared By';}
+  function clearEntryFields(){['e-desc','e-uom','e-rem'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('e-qty').value='';}
+  function clearAll(){if(rows.length&&!confirm('Clear all rows?'))return;rows=[];renderTable();}
+  function updatePrintTime(){document.getElementById('d-print-time').textContent='Printed: '+new Date().toLocaleString('en-PK',{dateStyle:'medium',timeStyle:'short'});}
+  window.addEventListener('beforeprint',updatePrintTime);
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

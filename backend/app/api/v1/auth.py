@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core import supabase_auth
 from app.core.deps import get_current_user
-from app.core.security import create_access_token, verify_password
 from app.db.session import get_db
 from app.models.rbac import User
 from app.schemas.auth import CurrentUser, LoginRequest, RegisterRequest, RegisterResponse, TokenResponse
@@ -15,15 +15,19 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/login", response_model=TokenResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
     try:
+        try:
+            session = supabase_auth.sign_in(payload.email, payload.password)
+        except supabase_auth.SupabaseAuthError:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+
         user = db.scalar(select(User).where(User.email == payload.email))
-        if user is None or not verify_password(payload.password, user.hashed_password):
+        if user is None:
             raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
         if not user.is_active:
             detail = "Your account is pending administrator approval." if not user.roles else "Account is inactive"
             raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail=detail)
 
-        token = create_access_token(subject=str(user.id))
-        return TokenResponse(access_token=token)
+        return TokenResponse(access_token=session["access_token"])
     except HTTPException:
         raise
     except Exception as exc:

@@ -1,23 +1,13 @@
 from datetime import datetime, timedelta, timezone
 
-import bcrypt
 from jose import JWTError, jwt
 
 from app.core.config import settings
 
-# bcrypt used directly rather than via passlib: passlib 1.7.x's bundled self-test is incompatible
-# with bcrypt>=4.1 (raises ValueError on import/first use), and passlib is unmaintained upstream.
-_BCRYPT_MAX_BYTES = 72
-
-
-def hash_password(plain_password: str) -> str:
-    truncated = plain_password.encode("utf-8")[:_BCRYPT_MAX_BYTES]
-    return bcrypt.hashpw(truncated, bcrypt.gensalt()).decode("utf-8")
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    truncated = plain_password.encode("utf-8")[:_BCRYPT_MAX_BYTES]
-    return bcrypt.checkpw(truncated, hashed_password.encode("utf-8"))
+# NOTE: password hashing/verification used to live here, but password custody moved to Supabase
+# Auth (see app/core/supabase_auth.py) -- Supabase issues and verifies the real access tokens.
+# create_access_token/decode_access_token remain only as the token format the test suite's fake
+# Supabase Auth stand-in uses (see tests/conftest.py); production code no longer calls them.
 
 
 def create_access_token(subject: str) -> str:

@@ -2,9 +2,10 @@ from uuid import UUID
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.security import decode_access_token
+from app.core import supabase_auth
 from app.db.session import get_db
 from app.models.rbac import Permission, Role, User
 
@@ -20,11 +21,16 @@ def get_current_user(token: str | None = Depends(oauth2_scheme), db: Session = D
     if token is None:
         raise credentials_error
 
-    user_id = decode_access_token(token)
-    if user_id is None:
+    try:
+        supabase_user = supabase_auth.get_user(token)
+    except supabase_auth.SupabaseAuthError:
         raise credentials_error
 
-    user = db.get(User, UUID(user_id))
+    auth_user_id = supabase_user.get("id")
+    if auth_user_id is None:
+        raise credentials_error
+
+    user = db.scalar(select(User).where(User.auth_user_id == UUID(auth_user_id)))
     if user is None or not user.is_active:
         raise credentials_error
     return user
